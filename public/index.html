@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quantum QEC Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <p class="eyebrow">Interactive Learning Lab</p>
+        <h1>Quantum Error Correction Playground</h1>
+        <p class="hero-copy">
+          Explore how the 3-qubit bit-flip code detects and corrects errors without directly measuring the logical quantum state.
+        </p>
+      </header>
+
+      <section class="grid">
+        <article class="panel controls">
+          <h2>Controls</h2>
+
+          <label>
+            Error model
+            <select id="error-model">
+              <option value="bitflip">Single-qubit bit-flip (X) noise</option>
+              <option value="biased">Biased noise (more errors on q2)</option>
+            </select>
+          </label>
+
+          <label>
+            Initial logical bit
+            <select id="logical-input">
+              <option value="0">|0⟩L</option>
+              <option value="1">|1⟩L</option>
+            </select>
+          </label>
+
+          <label>
+            Physical error probability p = <span id="p-value">0.15</span>
+            <input id="error-rate" type="range" min="0" max="0.45" value="0.15" step="0.01" />
+          </label>
+
+          <label>
+            Experiment shots = <span id="shots-value">500</span>
+            <input id="shots" type="range" min="100" max="3000" value="500" step="100" />
+          </label>
+
+          <div class="button-row">
+            <button id="step-btn">Step Through One Cycle</button>
+            <button id="rerun-btn" class="ghost">Run Fresh Cycle</button>
+            <button id="experiment-btn">Run Experiment</button>
+          </div>
+
+          <ol class="step-list" id="step-list">
+            <li data-step="encode">Encode logical qubit into 3 physical qubits</li>
+            <li data-step="noise">Apply stochastic noise channel</li>
+            <li data-step="syndrome">Measure syndrome (Z1Z2, Z2Z3 parity)</li>
+            <li data-step="decode">Decode and correct by majority vote</li>
+          </ol>
+        </article>
+
+        <article class="panel visualizer">
+          <h2>Single-Cycle Visualizer</h2>
+          <div id="state-tag" class="state-tag">Ready</div>
+          <div class="qubit-row" id="qubit-row"></div>
+
+          <div class="metrics">
+            <div>
+              <p class="metric-label">Syndrome s₁ (q1⊕q2)</p>
+              <p id="s1" class="metric-value">-</p>
+            </div>
+            <div>
+              <p class="metric-label">Syndrome s₂ (q2⊕q3)</p>
+              <p id="s2" class="metric-value">-</p>
+            </div>
+            <div>
+              <p class="metric-label">Decoder Action</p>
+              <p id="decoder" class="metric-value">-</p>
+            </div>
+            <div>
+              <p class="metric-label">Logical Output</p>
+              <p id="logical-out" class="metric-value">-</p>
+            </div>
+          </div>
+
+          <p id="explain" class="explain">
+            Press “Step Through One Cycle” to animate encode, noise, syndrome, and correction.
+          </p>
+        </article>
+      </section>
+
+      <section class="panel chart-panel">
+        <h2>Encoded vs Unencoded Reliability</h2>
+        <p class="chart-copy">
+          For each shot, we compare a single physical qubit (unencoded) against the 3-qubit code under the same error rate.
+        </p>
+        <div class="bars">
+          <div class="bar-card">
+            <p>Unencoded Success</p>
+            <div class="bar-track"><div id="plain-bar" class="bar fill-plain"></div></div>
+            <p id="plain-label" class="bar-label">0%</p>
+          </div>
+          <div class="bar-card">
+            <p>3-Qubit Code Success</p>
+            <div class="bar-track"><div id="qec-bar" class="bar fill-qec"></div></div>
+            <p id="qec-label" class="bar-label">0%</p>
+          </div>
+          <div class="bar-card">
+            <p>Improvement</p>
+            <div class="bar-track"><div id="gain-bar" class="bar fill-gain"></div></div>
+            <p id="gain-label" class="bar-label">0 pts</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
